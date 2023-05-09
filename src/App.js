@@ -1,31 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import axios from "axios";
+import football_api from "./key";
 
 export default function App() {
-    const [data , setData] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+  const baseURL = 'https://v3.football.api-sports.io'
+  const headers = {
+    'x-apisports-key': `${football_api}`
+  }
 
-    useEffect(() => {
-      axios(`https://v3.football.api-sports.io/leagues`)
-        .then((response) => {
-          setData(response.data)
-        })
-        .catch((error) => {
-          console.error("Error fetching data: ", error)
-          setError(error)
-        })
-        .finally(() => {
-          setLoading(false)
-        })
+
+  React.useEffect(() => {
+    const [post, setPost] = React.useState(null)
+
+    axios.get(baseURL, headers).then((response) => {
+      setPost(response.data)
     }, [])
+  })
 
-    if (loading) return "Loading..."
-    if (error) return "Error!!"
-  
-  return(
+  if (!post) return null
+
+  return (
     <>
-      {console.log(data)}
+      <h1>
+        {console.log(post)}
+      </h1>
     </>
   )
 }

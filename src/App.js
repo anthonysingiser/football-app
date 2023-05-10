@@ -1,29 +1,34 @@
-import React from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import football_api from "./key";
 
 export default function App() {
-  const baseURL = 'https://v3.football.api-sports.io'
-  const headers = {
-    'x-apisports-key': `${football_api}`
-  }
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
+  useEffect(() => {
+    fetch('https://api.football-data.org/v4/competitions/PL/', 
+    { headers: {
+      'method': 'get',
+      'X-Auth-Token': `${football_api}`
+    }})
+      .then((response) => {
+        setData(response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error)
+        setError(error)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, []);
 
-  React.useEffect(() => {
-    const [post, setPost] = React.useState(null)
-
-    axios.get(baseURL, headers).then((response) => {
-      setPost(response.data)
-    }, [])
-  })
-
-  if (!post) return null
-
+  if (loading) return "Loading..."
+  if (error) return "Error!!"
   return (
     <>
-      <h1>
-        {console.log(post)}
-      </h1>
+    {data[0]}
     </>
   )
 }
